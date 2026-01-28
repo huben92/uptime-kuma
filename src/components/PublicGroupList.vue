@@ -1,7 +1,7 @@
 <template>
-  <button @click="displayType = displayType === 'grid' ? 'list' : 'grid'">
+  <!-- <button @click="displayType = displayType === 'grid' ? 'list' : 'grid'">
     {{ displayType }}
-  </button>
+  </button> -->
     <!-- Group List -->
     <Draggable v-model="$root.publicGroupList" :disabled="!editMode" item-key="id" :animation="100">
         <template #item="group">
@@ -57,7 +57,7 @@
                             <div class="border px-3 py-1.5 rounded-md !border-white/10"
                               :class="{'flex items-center': displayType === 'list'}"
                               data-testid="monitor">
-                                <div class="whitespace-nowrap flex-none w-[300px] overflow-hidden text-ellipsis">
+                                <div class="whitespace-nowrap flex-none w-[360px] overflow-hidden text-ellipsis">
                                     <div class="info">
                                         <font-awesome-icon
                                             v-if="editMode"
