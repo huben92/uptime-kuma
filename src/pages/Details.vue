@@ -95,7 +95,7 @@
                 </span>
             </p>
 
-            <div class="functions">
+            <div class="functions mb-3">
                 <div class="btn-group" role="group">
                     <button v-if="monitor.active" class="btn btn-normal" @click="pauseDialog">
                         <font-awesome-icon icon="pause" />
@@ -123,6 +123,98 @@
                         {{ $t("Delete") }}
                     </button>
                 </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="flex justify-evenly gap-2.5 mb-3">
+                  <div
+                      v-if="monitor.type !== 'group'"
+                      class="border !border-white/10 !px-3 py-2.5 rounded-md w-full"
+                  >
+                      <div class="text-sm opacity-75">{{ pingTitle() }}</div>
+                      <span class="!text-xl block !py-1 text-white/85">
+                        <button @click.prevent="showPingChartBox = !showPingChartBox">
+                          <CountUp :value="ping" />
+                        </button>
+                      </span>
+                      <p class="text-[11px] leading-[1.2] pb-1 opacity-65 m-0">
+                        {{ $t("Current") }} ping response time
+                      </p>
+                  </div>
+                  <div
+                      v-if="monitor.type !== 'group'"
+                      class="border !border-white/10 !px-3 py-2.5 rounded-md w-full"
+                  >
+                      <div class="text-sm opacity-75">{{ pingTitle(true) }}</div>
+                      <span class="!text-xl block !py-1 text-white/85">
+                          <CountUp :value="avgPing" />
+                      </span>
+                      <p class="text-[11px] leading-[1.2] pb-1 opacity-65 m-0">
+                        Average response time in {{ $t("hours", 24) }}
+                      </p>
+                  </div>
+
+                  <!-- Uptime (24-hour) -->
+                  <div class="border !border-white/10 !px-3 py-2.5 rounded-md w-full">
+                      <div class="text-sm opacity-75">{{ $t("Uptime") }}</div>
+                      <span class="!text-xl block !py-1 text-white/85">
+                        <Uptime :monitor="monitor" type="24" />
+                      </span>
+                      <p class="text-[11px] leading-[1.2] pb-1 opacity-65 m-0">
+                        Uptime status in the last {{ $t("hours", 24) }}
+                      </p>
+                  </div>
+
+                  <!-- Uptime (30-day) -->
+                  <div class="border !border-white/10 !px-3 py-2.5 rounded-md w-full">
+                      <div class="text-sm opacity-75">{{ $t("Uptime") }}</div>
+                      <span class="!text-xl block !py-1 text-white/85">
+                        <Uptime :monitor="monitor" type="720" />
+                      </span>
+                      <p class="text-[11px] leading-[1.2] pb-1 opacity-65 m-0">
+                        Uptime status in the last {{ $t("days", 30) }}
+                      </p>
+                  </div>
+
+                  <!-- Uptime (1-year) -->
+                  <div class="border !border-white/10 !px-3 py-2.5 rounded-md w-full">
+                      <div class="text-sm opacity-75">{{ $t("Uptime") }}</div>
+                      <span class="!text-xl block !py-1 text-white/85">
+                        <Uptime :monitor="monitor" type="1y" />
+                      </span>
+                      <p class="text-[11px] leading-[1.2] pb-1 opacity-65 m-0">
+                        Uptime status in the last {{ $t("years", 1) }}
+                      </p>
+                  </div>
+
+                  <div v-if="tlsInfo" class="border !border-white/10 !px-3 py-2.5 rounded-md w-full">
+                    <div class="text-sm opacity-75">{{ $t("Cert Exp.") }}</div>
+                    <span class="!text-xl block !py-1 text-white/85">
+                      <a href="#" @click.prevent="toggleCertInfoBox = !toggleCertInfoBox">
+                          {{ $t("days", tlsInfo.certInfo.daysRemaining) }}
+                      </a>
+                      <font-awesome-icon
+                        v-if="tlsInfo.hostnameMatchMonitorUrl === false"
+                        class="cert-info-warn"
+                        icon="exclamation-triangle"
+                        :title="$t('certHostnameMismatch')"
+                      />
+                    </span>
+                    <p class="text-[11px] leading-[1.2] pb-1 opacity-65 m-0">
+                      Certificate expired at
+                      <Datetime :value="tlsInfo.certInfo.validTo" date-only />
+                    </p>
+                  </div>
+                  <div v-if="domainInfo" class="border !border-white/10 !px-3 py-2.5 rounded-md w-full">
+                    <div class="text-sm opacity-75">{{ $t("labelDomainExpiry") }}</div>
+                    <span class="!text-xl block !py-1 text-white/85">
+                        {{ $t("days", domainInfo.daysRemaining) }}
+                    </span>
+                    <p class="text-[11px] leading-[1.2] pb-1 opacity-65 m-0">
+                      Domain expired at
+                      <Datetime :value="domainInfo.expiresOn" date-only />
+                    </p>
+                  </div>
             </div>
 
             <div class="shadow-box">
@@ -182,92 +274,6 @@
                         ></prism-editor>
                     </div>
                 </transition>
-            </div>
-
-            <!-- Stats -->
-            <div class="shadow-box big-padding text-center stats">
-                <div class="row">
-                    <div
-                        v-if="monitor.type !== 'group'"
-                        class="col-12 col-sm col row d-flex align-items-center d-sm-block"
-                    >
-                        <h4 class="col-4 col-sm-12">{{ pingTitle() }}</h4>
-                        <p class="col-4 col-sm-12 mb-0 mb-sm-2">({{ $t("Current") }})</p>
-                        <span class="col-4 col-sm-12 num">
-                            <a href="#" @click.prevent="showPingChartBox = !showPingChartBox">
-                                <CountUp :value="ping" />
-                            </a>
-                        </span>
-                    </div>
-                    <div
-                        v-if="monitor.type !== 'group'"
-                        class="col-12 col-sm col row d-flex align-items-center d-sm-block"
-                    >
-                        <h4 class="col-4 col-sm-12">{{ pingTitle(true) }}</h4>
-                        <p class="col-4 col-sm-12 mb-0 mb-sm-2">({{ $t("hours", 24) }})</p>
-                        <span class="col-4 col-sm-12 num">
-                            <CountUp :value="avgPing" />
-                        </span>
-                    </div>
-
-                    <!-- Uptime (24-hour) -->
-                    <div class="col-12 col-sm col row d-flex align-items-center d-sm-block">
-                        <h4 class="col-4 col-sm-12">{{ $t("Uptime") }}</h4>
-                        <p class="col-4 col-sm-12 mb-0 mb-sm-2">({{ $t("hours", 24) }})</p>
-                        <span class="col-4 col-sm-12 num">
-                            <Uptime :monitor="monitor" type="24" />
-                        </span>
-                    </div>
-
-                    <!-- Uptime (30-day) -->
-                    <div class="col-12 col-sm col row d-flex align-items-center d-sm-block">
-                        <h4 class="col-4 col-sm-12">{{ $t("Uptime") }}</h4>
-                        <p class="col-4 col-sm-12 mb-0 mb-sm-2">({{ $t("days", 30) }})</p>
-                        <span class="col-4 col-sm-12 num">
-                            <Uptime :monitor="monitor" type="720" />
-                        </span>
-                    </div>
-
-                    <!-- Uptime (1-year) -->
-                    <div class="col-12 col-sm col row d-flex align-items-center d-sm-block">
-                        <h4 class="col-4 col-sm-12">{{ $t("Uptime") }}</h4>
-                        <p class="col-4 col-sm-12 mb-0 mb-sm-2">({{ $t("years", 1) }})</p>
-                        <span class="col-4 col-sm-12 num">
-                            <Uptime :monitor="monitor" type="1y" />
-                        </span>
-                    </div>
-
-                    <div v-if="tlsInfo" class="col-12 col-sm col row d-flex align-items-center d-sm-block">
-                        <h4 class="col-4 col-sm-12">{{ $t("Cert Exp.") }}</h4>
-                        <p class="col-4 col-sm-12 mb-0 mb-sm-2">
-                            (
-                            <Datetime :value="tlsInfo.certInfo.validTo" date-only />
-                            )
-                        </p>
-                        <span class="col-4 col-sm-12 num">
-                            <a href="#" @click.prevent="toggleCertInfoBox = !toggleCertInfoBox">
-                                {{ $t("days", tlsInfo.certInfo.daysRemaining) }}
-                            </a>
-                            <font-awesome-icon
-                                v-if="tlsInfo.hostnameMatchMonitorUrl === false"
-                                class="cert-info-warn"
-                                icon="exclamation-triangle"
-                                :title="$t('certHostnameMismatch')"
-                            />
-                        </span>
-                    </div>
-                    <div v-if="domainInfo" class="col-12 col-sm col row d-flex align-items-center d-sm-block">
-                        <h4 class="col-4 col-sm-12">{{ $t("labelDomainExpiry") }}</h4>
-                        <p class="col-4 col-sm-12 mb-0 mb-sm-2">
-                            (
-                            <Datetime :value="domainInfo.expiresOn" date-only />
-                            )
-                        </p>
-                        <span class="col-4 col-sm-12 num">
-                            {{ $t("days", domainInfo.daysRemaining) }}
-                        </span>
-                    </div>
-                </div>
             </div>
 
             <!-- Cert Info Box -->

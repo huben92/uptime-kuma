@@ -376,35 +376,35 @@
             </template>
 
             <!-- Overall Status -->
-            <div class="shadow-box list p-4 overall-status mb-4">
+            <div class="overall-status !font-medium mb-4">
                 <div v-if="Object.keys($root.publicMonitorList).length === 0 && loadedData">
-                    <font-awesome-icon icon="question-circle" class="ok" />
+                    <font-awesome-icon icon="question-circle" class="ok !mr-1.5" />
                     {{ $t("No Services") }}
                 </div>
 
                 <template v-else>
-                    <div v-if="allUp">
-                        <font-awesome-icon icon="check-circle" class="ok" />
-                        {{ $t("All Systems Operational") }}
+                    <div v-if="allUp" class="ok">
+                      <font-awesome-icon icon="check-circle" class="ok !mr-1.5" />
+                      {{ $t("All Systems Operational") }}
                     </div>
 
                     <div v-else-if="partialDown">
-                        <font-awesome-icon icon="exclamation-circle" class="warning" />
+                        <font-awesome-icon icon="exclamation-circle" class="warning !mr-1.5" />
                         {{ $t("Partially Degraded Service") }}
                     </div>
 
                     <div v-else-if="allDown">
-                        <font-awesome-icon icon="times-circle" class="danger" />
+                        <font-awesome-icon icon="times-circle" class="danger !mr-1.5" />
                         {{ $t("Degraded Service") }}
                     </div>
 
                     <div v-else-if="isMaintenance">
-                        <font-awesome-icon icon="wrench" class="status-maintenance" />
+                        <font-awesome-icon icon="wrench" class="status-maintenance !mr-1.5" />
                         {{ $t("maintenanceStatus-under-maintenance") }}
                     </div>
 
                     <div v-else>
-                        <font-awesome-icon icon="question-circle" style="color: #efefef" />
+                      <font-awesome-icon icon="question-circle" style="color: #efefef" />
                     </div>
                 </template>
             </div>

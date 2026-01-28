@@ -13,43 +13,37 @@
         </div>
 
         <!-- Desktop header -->
-        <header v-if="!$root.isMobile" class="d-flex flex-wrap justify-content-center py-3 mb-3 border-bottom">
+        <header class="flex items-center justify-between fixed left-0 top-0 right-0 px-3 py-2 text-sm">
             <router-link
                 to="/dashboard"
-                class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none"
+                class="flex items-center gap-2.5"
+                style="text-decoration: none;"
             >
-                <object class="bi me-2 ms-4" width="40" height="40" data="/icon.svg" />
-                <span class="fs-4 title">{{ $t("Uptime Kuma") }}</span>
+                <object class="size-9" data="/icon.svg" />
+                <span class="text-lg">{{ $t("Uptime Kuma") }}</span>
             </router-link>
 
-            <a
-                v-if="hasNewVersion"
-                target="_blank"
-                href="https://github.com/louislam/uptime-kuma/releases"
-                class="btn btn-primary me-3"
-            >
-                <font-awesome-icon icon="arrow-alt-circle-up" />
-                {{ $t("New Update") }}
-            </a>
-
-            <ul class="nav nav-pills">
+            <ul class="nav nav-pills m-0">
                 <li v-if="$root.loggedIn" class="nav-item me-2">
-                    <router-link to="/manage-status-page" class="nav-link">
+                    <router-link to="/manage-status-page" class="nav-link !py-[6px]">
                         <font-awesome-icon icon="stream" />
                         {{ $t("Status Pages") }}
                     </router-link>
                 </li>
                 <li v-if="$root.loggedIn" class="nav-item me-2">
-                    <router-link to="/dashboard" class="nav-link">
+                    <router-link to="/dashboard" class="nav-link !py-[6px]">
                         <font-awesome-icon icon="tachometer-alt" />
                         {{ $t("Dashboard") }}
                     </router-link>
                 </li>
+            </ul>
+
+
+            <ul class="nav nav-pills m-0">
                 <li v-if="$root.loggedIn" class="nav-item">
                     <div class="dropdown dropdown-profile-pic">
-                        <div class="nav-link" data-bs-toggle="dropdown">
-                            <div class="profile-pic">{{ $root.usernameFirstChar }}</div>
-                            <font-awesome-icon icon="angle-down" />
+                        <div class="flex items-center cursor-pointer" data-bs-toggle="dropdown">
+                          <div class="bg-green-400 rounded-full size-8 flex items-center justify-center text-white">{{ $root.usernameFirstChar }}</div>
                         </div>
 
                         <!-- Header's Dropdown Menu -->
@@ -117,15 +111,7 @@
             </ul>
         </header>
 
-        <!-- Mobile header -->
-        <header v-else class="d-flex flex-wrap justify-content-center pt-2 pb-2 mb-3">
-            <router-link to="/dashboard" class="d-flex align-items-center text-dark text-decoration-none">
-                <object class="bi" width="40" height="40" data="/icon.svg" />
-                <span class="fs-4 title ms-2">Uptime Kuma</span>
-            </router-link>
-        </header>
-
-        <main>
+        <main class="pt-18">
             <router-view v-if="$root.loggedIn" />
             <Login v-if="!$root.loggedIn && $root.allowLoginDialog" />
         </main>

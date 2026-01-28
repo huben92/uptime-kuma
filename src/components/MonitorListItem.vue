@@ -13,7 +13,7 @@
             <!-- Checkbox -->
             <div v-if="isSelectMode" class="select-input-wrapper">
                 <input
-                    class="form-check-input select-input"
+                    class="form-check-input select-input !ml-px"
                     type="checkbox"
                     :aria-label="$t('Check/Uncheck')"
                     :checked="isSelected(monitor.id)"
@@ -29,7 +29,7 @@
                             'monitor-item': $root.userHeartbeatBar == 'bottom' || $root.userHeartbeatBar == 'none',
                         }"
                     >
-                        <div class="me-1">
+                        <div class="me-1 -mt-1">
                             <Uptime :monitor="monitor" type="24" :pill="true" />
                         </div>
                         <div class="d-flex align-items-center gap-2 flex-fill" style="min-width: 0">

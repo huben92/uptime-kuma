@@ -1,101 +1,93 @@
 <template>
-    <div class="shadow-box mb-3 p-0" :style="boxStyle">
-        <div class="list-header">
-            <!-- Line 1: Checkbox + Status + Tags + Search Bar -->
-            <div class="filter-row">
-                <div class="search-wrapper">
-                    <a v-if="searchText != ''" class="search-icon" @click="clearSearchText">
-                        <font-awesome-icon icon="times" />
-                    </a>
-                    <form @submit.prevent>
-                        <input
-                            v-model="searchText"
-                            class="form-control search-input"
-                            :placeholder="$t('Search...')"
-                            :aria-label="$t('Search monitored sites')"
-                            autocomplete="off"
-                        />
-                    </form>
-                </div>
-
-                <div class="filters-group">
-                    <input
-                        v-if="!selectMode"
-                        v-model="selectMode"
-                        class="form-check-input"
-                        type="checkbox"
-                        :aria-label="$t('selectAllMonitorsAria')"
-                        @change="selectAll = selectMode"
-                    />
-                    <input
-                        v-else
-                        v-model="selectAll"
-                        class="form-check-input"
-                        type="checkbox"
-                        :aria-label="selectAll ? $t('deselectAllMonitorsAria') : $t('selectAllMonitorsAria')"
-                    />
-
-                    <MonitorListFilter
-                        :filterState="filterState"
-                        :allCollapsed="allGroupsCollapsed"
-                        :hasGroups="groupMonitors.length >= 2"
-                        @update-filter="updateFilter"
-                        @toggle-collapse-all="toggleCollapseAll"
-                    />
-                </div>
-            </div>
-
-            <!-- Line 2: Cancel + Actions (shown when selection mode is active) -->
-            <div v-if="selectMode && selectedMonitorCount > 0" class="selection-row">
-                <button class="btn btn-outline-normal" @click="cancelSelectMode">
-                    {{ $t("Cancel") }}
-                </button>
-                <div class="actions-wrapper">
-                    <div class="dropdown">
-                        <button
-                            class="btn btn-outline-normal dropdown-toggle"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            :aria-label="$t('Actions')"
-                            :disabled="bulkActionInProgress"
-                            aria-expanded="false"
-                        >
-                            {{ $t("Actions") }}
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="#" @click.prevent="pauseDialog">
-                                    <font-awesome-icon icon="pause" class="me-2" />
-                                    {{ $t("Pause") }}
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" @click.prevent="resumeSelected">
-                                    <font-awesome-icon icon="play" class="me-2" />
-                                    {{ $t("Resume") }}
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    class="dropdown-item text-danger"
-                                    href="#"
-                                    @click.prevent="$refs.confirmDelete.show()"
-                                >
-                                    <font-awesome-icon icon="trash" class="me-2" />
-                                    {{ $t("Delete") }}
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <span class="selected-count">
-                    {{ $t("selectedMonitorCountMsg", selectedMonitorCount) }}
-                </span>
-            </div>
+    <div class="fixed left-0 top-[52px] bottom-0 w-[510px] border-r !border-white/10 pt-2 pb-5">
+      <div class="flex items-center border-b px-3 pb-2 border-b-white/10">
+        <div class="relative w-full">
+          <a v-if="searchText != ''"
+            class="absolute top-1/2 right-4 cursor-pointer"
+            @click="clearSearchText">
+            <font-awesome-icon icon="times" />
+          </a>
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 opacity-40">
+            <font-awesome-icon icon="search"/>
+          </div>
+          <form @submit.prevent>
+            <input
+              v-model="searchText"
+              class="rounded-full border !px-9 !text-sm py-1.5 !border-white/30 w-full"
+              :placeholder="$t('Search...')"
+              :aria-label="$t('Search monitored sites')"
+              autocomplete="off"
+            />
+          </form>
         </div>
-        <div
+        <div class="flex-none flex items-center text-xs pl-4">
+          <div class="pr-1 opacity-60">
+            <font-awesome-icon icon="filter"/>
+          </div>
+          <MonitorListFilter
+            :filterState="filterState"
+            :allCollapsed="allGroupsCollapsed"
+            :hasGroups="groupMonitors.length >= 2"
+            @update-filter="updateFilter"
+            @toggle-collapse-all="toggleCollapseAll"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center px-3 border-b border-b-white/10">
+        <label class="!flex items-center gap-1">
+          <input
+            v-model="selectAll"
+            class="form-check-input m-0"
+            type="checkbox"
+            :aria-label="selectAll ? $t('deselectAllMonitorsAria') : $t('selectAllMonitorsAria')"
+          />
+          <div class="text-sm px-[7px] py-[5px]" v-if="!selectedMonitorCount">
+            Select all
+          </div>
+        </label>
+        <div class="dropdown"
+          v-if="selectedMonitorCount">
+          <button
+            class="btn btn-outline-normal dropdown-toggle !text-sm"
+            type="button"
+            data-bs-toggle="dropdown"
+            :aria-label="$t('Actions')"
+            :disabled="bulkActionInProgress"
+            aria-expanded="false"
+          >
+            Selected ({{ selectedMonitorCount }})
+          </button>
+          <ul class="dropdown-menu">
+              <li>
+                  <a class="dropdown-item" href="#" @click.prevent="pauseDialog">
+                      <font-awesome-icon icon="pause" class="me-2" />
+                      {{ $t("Pause") }}
+                  </a>
+              </li>
+              <li>
+                  <a class="dropdown-item" href="#" @click.prevent="resumeSelected">
+                      <font-awesome-icon icon="play" class="me-2" />
+                      {{ $t("Resume") }}
+                  </a>
+              </li>
+              <li>
+                  <a
+                      class="dropdown-item text-danger"
+                      href="#"
+                      @click.prevent="$refs.confirmDelete.show()"
+                  >
+                      <font-awesome-icon icon="trash" class="me-2" />
+                      {{ $t("Delete") }}
+                  </a>
+              </li>
+          </ul>
+        </div>
+      </div>
+
+      <div
             ref="monitorList"
-            class="monitor-list px-2"
+            class="monitor-list !px-2"
             :class="{ scrollbar: scrollbar }"
             :style="monitorListStyle"
             data-testid="monitor-list"
@@ -109,7 +101,7 @@
                 v-for="item in sortedMonitorList"
                 :key="`${item.id}-${collapseKey}`"
                 :monitor="item"
-                :isSelectMode="selectMode"
+                :isSelectMode="true"
                 :isSelected="isSelected"
                 :select="select"
                 :deselect="deselect"
@@ -117,6 +109,10 @@
                 :sort-func="sortFunc"
             />
         </div>
+      <router-link to="/add" class="btn btn-primary mb-3">
+          <font-awesome-icon icon="plus" />
+          {{ $t("Add New Monitor") }}
+      </router-link>
     </div>
 
     <Confirm ref="confirmPause" :yes-text="$t('Yes')" :no-text="$t('No')" @yes="pauseSelected">

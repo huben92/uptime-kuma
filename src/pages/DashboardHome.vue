@@ -1,43 +1,57 @@
 <template>
     <transition ref="tableContainer" name="slide-fade" appear>
         <div v-if="$route.name === 'DashboardHome'">
-            <h1 class="mb-3">
+            <div class="mb-1 text-sm">
                 {{ $t("Quick Stats") }}
-            </h1>
+            </div>
 
-            <div class="shadow-box big-padding text-center mb-3">
-                <div class="row">
-                    <div class="col">
-                        <h3>{{ $t("Up") }}</h3>
-                        <span class="num" :class="$root.stats.up === 0 && 'text-secondary'">
-                            {{ $root.stats.up }}
-                        </span>
+            <div class="flex justify-evenly gap-3 mb-3">
+                <div class="border !border-white/10 px-3 py-2 rounded-md w-full">
+                    <div class="text-sm opacity-75">{{ $t("Up") }}</div>
+                    <div class="!text-2xl py-1.5" :class="$root.stats.up === 0 && 'text-secondary'">
+                      {{ $root.stats.up }}
                     </div>
-                    <div class="col">
-                        <h3>{{ $t("Down") }}</h3>
-                        <span class="num" :class="$root.stats.down > 0 ? 'text-danger' : 'text-secondary'">
-                            {{ $root.stats.down }}
-                        </span>
+                    <div class="text-[11px] leading-[1.2] pb-1 opacity-65">
+                      All service that currently up and running.
                     </div>
-                    <div class="col">
-                        <h3>{{ $t("Maintenance") }}</h3>
-                        <span class="num" :class="$root.stats.maintenance > 0 ? 'text-maintenance' : 'text-secondary'">
-                            {{ $root.stats.maintenance }}
-                        </span>
+                </div>
+                <div class="border !border-white/10 px-3 py-2 rounded-md w-full">
+                    <div class="text-sm opacity-75">{{ $t("Down") }}</div>
+                    <div class="!text-2xl py-1.5" :class="$root.stats.down > 0 ? 'text-danger' : ''">
+                      {{ $root.stats.down }}
                     </div>
-                    <div class="col">
-                        <h3>{{ $t("Unknown") }}</h3>
-                        <span class="num text-secondary">{{ $root.stats.unknown }}</span>
+                    <div class="text-[11px] leading-[1.2] pb-1 opacity-65">
+                      All service that currently down.
                     </div>
-                    <div class="col">
-                        <h3>{{ $t("pauseDashboardHome") }}</h3>
-                        <span class="num text-secondary">{{ $root.stats.pause }}</span>
+                </div>
+                <div class="border !border-white/10 px-3 py-2 rounded-md w-full">
+                    <div class="text-sm opacity-75">{{ $t("Maintenance") }}</div>
+                    <div class="!text-2xl py-1.5" :class="$root.stats.maintenance > 0 ? 'text-cyan-400' : ''">
+                      {{ $root.stats.maintenance }}
                     </div>
+                    <div class="text-[11px] leading-[1.2] pb-1 opacity-65">
+                      Services that flaged under maintenance.
+                    </div>
+                </div>
+                <div class="border !border-white/10 px-3 py-2 rounded-md w-full">
+                  <div class="text-sm opacity-75">{{ $t("Unknown") }}</div>
+                  <div class="!text-2xl py-1.5">{{ $root.stats.unknown }}</div>
+                  <div class="text-[11px] leading-[1.2] pb-1 opacity-65">
+                    Unknown service status
+                  </div>
+                </div>
+                <div class="border !border-white/10 px-3 py-2 rounded-md w-full">
+                  <div class="text-sm opacity-75">{{ $t("pauseDashboardHome") }}</div>
+                  <div class="!text-2xl py-1.5">{{ $root.stats.pause }}</div>
+                  <div class="text-[11px] leading-[1.2] pb-1 opacity-65">
+                    Services with monitoring are currently paused.
+                  </div>
                 </div>
             </div>
 
-            <div class="shadow-box table-shadow-box" style="overflow-x: hidden">
-                <div class="mb-3 text-end">
+            <div class="border rounded-lg !border-white/10" style="overflow-x: hidden">
+                <div class="flex items-center justify-between border-b px-3 !border-white/10 py-2">
+                  <div class="font-medium">Recent Events</div>
                     <button
                         class="btn btn-sm btn-outline-danger"
                         :disabled="clearingAllEvents"
@@ -49,10 +63,10 @@
                 <table class="table table-borderless table-hover">
                     <thead>
                         <tr>
-                            <th>{{ $t("Name") }}</th>
-                            <th>{{ $t("Status") }}</th>
-                            <th>{{ $t("DateTime") }}</th>
-                            <th>{{ $t("Message") }}</th>
+                            <th class="!border-b !border-b-white/10 font-medium !p-0 !py-1.5 opacity-75 !pl-4">{{ $t("Name") }}</th>
+                            <th class="!border-b !border-b-white/10 font-medium !p-0 !py-1.5 opacity-75 !pl-4">{{ $t("Status") }}</th>
+                            <th class="!border-b !border-b-white/10 font-medium !p-0 !py-1.5 opacity-75 !pl-4">{{ $t("DateTime") }}</th>
+                            <th class="!border-b !border-b-white/10 font-medium !p-0 !py-1.5 opacity-75 !pl-4">{{ $t("Message") }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,14 +75,14 @@
                             :key="index"
                             :class="{ 'shadow-box': $root.windowWidth <= 550 }"
                         >
-                            <td class="name-column">
+                            <td class="!pl-4">
                                 <router-link :to="`/dashboard/${beat.monitorID}`">
                                     {{ $root.monitorList[beat.monitorID]?.name }}
                                 </router-link>
                             </td>
-                            <td><Status :status="beat.status" /></td>
-                            <td :class="{ 'border-0': !beat.msg }"><Datetime :value="beat.time" /></td>
-                            <td class="border-0">{{ beat.msg }}</td>
+                            <td class="!pl-4"><Status :status="beat.status" /></td>
+                            <td class="!pl-4" :class="{'border-0': !beat.msg }"><Datetime :value="beat.time" /></td>
+                            <td class="!pl-4 border-0">{{ beat.msg }}</td>
                         </tr>
 
                         <tr v-if="importantHeartBeatListLength === 0">
