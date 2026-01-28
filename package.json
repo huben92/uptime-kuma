@@ -69,7 +69,7 @@
         "reset-migrate-aggregate-table-state": "node extra/reset-migrate-aggregate-table-state.js",
         "generate-changelog": "node ./extra/generate-changelog.mjs",
         "tailwind:dev": "tailwindcss -i ./src/assets/css/tailwind.css -o ./src/assets/css/tailwind.generated.css --watch",
-        "tailwind:build": "tailwindcss -i ./src/frontend/assets/css/tailwind.css -o ./src/frontend/assets/css/tailwind.generated.css --minify",
+        "tailwind:build": "tailwindcss -i ./src/assets/css/tailwind.css -o ./src/assets/css/tailwind.generated.css --minify",
         "build:with-tailwind": "npm run tailwind:build && npm run build",
         "vite:dev": "vite",
         "dev": "concurrently -k -r \"npm run tailwind:dev\" \"wait-on tcp:3000 && npm run start-server-dev \" \"npm run start-frontend-dev\""
